@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardboard Capitalist V2 - Demo</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #4a5568;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #3182ce;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #3182ce;
+            border-bottom: 1px solid #4a5568;
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            color: #38b2ac;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .feature-section {
+            margin-bottom: 3rem;
+            background-color: #2d3748;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-card {
+            background-color: #1a202c;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .screenshot {
+            width: 100%;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            border: 2px solid #4a5568;
+        }
+        
+        .card-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .card {
+            position: relative;
+            width: 200px;
+            height: 280px;
+            background-color: #2d3748;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-art {
+            width: 100%;
+            height: 50%;
+            background-color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e2e8f0;
+            font-weight: bold;
+        }
+        
+        .card-info {
+            padding: 1rem;
+        }
+        
+        .card-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-type {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-rarity {
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-description {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+        
+        .card-grade {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #3182ce;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-weight: bold;
+            border-bottom-left-radius: 0.5rem;
+        }
+        
+        .card-mechanic {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: #d69e2e;
+            color: #1a202c;
+            padding: 0.25rem 0.5rem;
+            font-weight: bold;
+            border-top-right-radius: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .mythic-rare {
+            background: linear-gradient(45deg, #d69e2e, #ed8936, #d69e2e);
+            color: #1a202c;
+        }
+        
+        .ultra-rare {
+            background-color: #d53f8c;
+        }
+        
+        .rare {
+            background-color: #3182ce;
+        }
+        
+        .uncommon {
+            background-color: #38a169;
+        }
+        
+        .common {
+            background-color: #718096;
+        }
+        
+        .trader {
+            display: flex;
+            background-color: #1a202c;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+        
+        .trader-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #4a5568;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .trader-info {
+            flex: 1;
+        }
+        
+        .trader-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .trader-personality {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .trader-description {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .trader-stats {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+        
+        .collector {
+            border-color: #8e44ad;
+        }
+        
+        .collector .trader-avatar {
+            background-color: #8e44ad;
+        }
+        
+        .investor {
+            border-color: #2ecc71;
+        }
+        
+        .investor .trader-avatar {
+            background-color: #2ecc71;
+        }
+        
+        .casual {
+            border-color: #3498db;
+        }
+        
+        .casual .trader-avatar {
+            background-color: #3498db;
+        }
+        
+        .competitive {
+            border-color: #e74c3c;
+        }
+        
+        .competitive .trader-avatar {
+            background-color: #e74c3c;
+        }
+        
+        .grading-service {
+            background-color: #1a202c;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .grading-service-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .grading-service-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .grading-service-cost {
+            font-weight: bold;
+            color: #38b2ac;
+        }
+        
+        .grading-service-description {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .grading-service-details {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+        
+        .grading-scale {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .grading-scale th, .grading-scale td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #4a5568;
+        }
+        
+        .grading-scale th {
+            background-color: #2d3748;
+            font-weight: bold;
+        }
+        
+        .achievement {
+            display: flex;
+            background-color: #1a202c;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #3182ce;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .achievement-description {
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #3182ce;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background-color 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #2c5282;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #4a5568;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cardboard Capitalist V2</h1>
+            <p>Enhanced Edition with Trading, Card Grading, and Mythic Legends Set</p>
+        </header>
+        
+        <div class="feature-section">
+            <h2>New Features Overview</h2>
+            <p>Cardboard Capitalist V2 introduces three major new features that enhance the gameplay experience and add depth to the card collecting mechanics.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Trading System</h3>
+                    <p>Trade with AI collectors who have different personalities and preferences. Build reputation for better deals and expand your collection through strategic trades.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏅</div>
+                    <h3>Card Grading</h3>
+                    <p>Submit your cards for professional grading to increase their value. Choose from different grading services with varying costs and turnaround times.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Mythic Legends Set</h3>
+                    <p>Collect cards from the new Mythic Legends set featuring powerful creatures and special mechanics. Includes the new "Mythic Rare" rarity level.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Trading System</h2>
+            <p>The trading system allows you to interact with AI traders who have different personalities and preferences. Each trader values cards differently based on their personality, creating unique trading opportunities.</p>
+            
+            <h3>Trader Personalities</h3>
+            <div class="trader collector">
+                <div class="trader-avatar">📚</div>
+                <div class="trader-info">
+                    <div class="trader-name">Alex Morgan</div>
+                    <div class="trader-personality">Collector</div>
+                    <div class="trader-description">Focuses on completing sets and acquiring rare cards.</div>
+                    <div class="trader-stats">Reputation: 75% | Cash: $450.25 | Collection: 42 cards</div>
+                </div>
+            </div>
+            
+            <div class="trader investor">
+                <div class="trader-avatar">💰</div>
+                <div class="trader-info">
+                    <div class="trader-name">Jordan Chen</div>
+                    <div class="trader-personality">Investor</div>
+                    <div class="trader-description">Focuses on card value and potential growth.</div>
+                    <div class="trader-stats">Reputation: 82% | Cash: $875.50 | Collection: 28 cards</div>
+                </div>
+            </div>
+            
+            <div class="trader casual">
+                <div class="trader-avatar">😊</div>
+                <div class="trader-info">
+                    <div class="trader-name">Taylor Kim</div>
+                    <div class="trader-personality">Casual</div>
+                    <div class="trader-description">Trades for fun and personal preference.</div>
+                    <div class="trader-stats">Reputation: 90% | Cash: $215.75 | Collection: 35 cards</div>
+                </div>
+            </div>
+            
+            <div class="trader competitive">
+                <div class="trader-avatar">🏆</div>
+                <div class="trader-info">
+                    <div class="trader-name">Casey Smith</div>
+                    <div class="trader-personality">Competitive</div>
+                    <div class="trader-description">Focuses on powerful and valuable cards.</div>
+                    <div class="trader-stats">Reputation: 68% | Cash: $650.00 | Collection: 31 cards</div>
+                </div>
+            </div>
+            
+            <h3>Trading Features</h3>
+            <ul>
+                <li><strong>Negotiation System:</strong> Traders will make counter-offers based on their personality</li>
+                <li><strong>Reputation System:</strong> Build reputation with traders for better deals</li>
+                <li><strong>Trade History:</strong> Track your trading history and performance</li>
+                <li><strong>Special Interests:</strong> Each trader has specific cards or sets they're particularly interested in</li>
+            </ul>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Card Grading System</h2>
+            <p>The card grading system allows you to submit your cards for professional grading to increase their value. Graded cards can be worth significantly more than ungraded cards.</p>
+            
+            <h3>Grading Services</h3>
+            <div class="grading-service">
+                <div class="grading-service-header">
+                    <div class="grading-service-name">Standard</div>
+                    <div class="grading-service-cost">$15.00 per card</div>
+                </div>
+                <div class="grading-service-description">15-day turnaround time</div>
+                <div class="grading-service-details">Maximum card value: $500.00</div>
+            </div>
+            
+            <div class="grading-service">
+                <div class="grading-service-header">
+                    <div class="grading-service-name">Express</div>
+                    <div class="grading-service-cost">$30.00 per card</div>
+                </div>
+                <div class="grading-service-description">7-day turnaround time</div>
+                <div class="grading-service-details">Maximum card value: $1,000.00</div>
+            </div>
+            
+            <div class="grading-service">
+                <div class="grading-service-header">
+                    <div class="grading-service-name">Premium</div>
+                    <div class="grading-service-cost">$75.00 per card</div>
+                </div>
+                <div class="grading-service-description">3-day turnaround time</div>
+                <div class="grading-service-details">Maximum card value: $5,000.00</div>
+            </div>
+            
+            <div class="grading-service">
+                <div class="grading-service-header">
+                    <div class="grading-service-name">Ultra</div>
+                    <div class="grading-service-cost">$150.00 per card</div>
+                </div>
+                <div class="grading-service-description">1-day turnaround time</div>
+                <div class="grading-service-details">Maximum card value: Unlimited</div>
+            </div>
+            
+            <h3>Grading Scale</h3>
+            <table class="grading-scale">
+                <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Value Multiplier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>Gem Mint</td>
+                        <td>Perfect card in every way</td>
+                        <td>3.0x</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Mint</td>
+                        <td>Nearly perfect with only minor imperfections</td>
+                        <td>2.5x</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Near Mint-Mint</td>
+                        <td>Excellent condition with very minor flaws</td>
+                        <td>2.0x</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Near Mint</td>
+                        <td>Minor flaws but still excellent condition</td>
+                        <td>1.7x</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Excellent-Near Mint</td>
+                        <td>Slight imperfections visible upon close inspection</td>
+                        <td>1.5x</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Excellent</td>
+                        <td>Minor wear visible but still attractive appearance</td>
+                        <td>1.3x</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Very Good-Excellent</td>
+                        <td>Light wear with minor defects</td>
+                        <td>1.2x</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Very Good</td>
+                        <td>Moderate wear with noticeable defects</td>
+                        <td>1.1x</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Good</td>
+                        <td>Heavily played with significant wear</td>
+                        <td>1.0x</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Poor</td>
+                        <td>Heavily damaged but still identifiable</td>
+                        <td>0.8x</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Graded Card Example</h3>
+            <div class="card-display">
+                <div class="card">
+                    <div class="card-grade">GRADE 10</div>
+                    <div class="card-art">Drakonyx</div>
+                    <div class="card-info">
+                        <div class="card-name">Drakonyx</div>
+                        <div class="card-type">Fire / Dragon</div>
+                        <div class="card-rarity ultra-rare">Ultra Rare</div>
+                        <div class="card-description">An ancient dragon whose fiery breath can melt mountains.</div>
+                    </div>
+                    <div class="card-mechanic">Ancient Power</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-grade">GRADE 9</div>
+                    <div class="card-art">Solarus</div>
+                    <div class="card-info">
+                        <div class="card-name">Solarus</div>
+                        <div class="card-type">Light / Fire / Mythical</div>
+                        <div class="card-rarity ultra-rare">Ultra Rare</div>
+                        <div class="card-description">The embodiment of the sun, radiating intense heat and light.</div>
+                    </div>
+                    <div class="card-mechanic">Mythic Evolution</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Mythic Legends Card Set</h2>
+            <p>The Mythic Legends set introduces 40 new cards featuring ancient creatures of myth and legend. This set includes the new "Mythic Rare" rarity level and special mechanics that affect card value.</p>
+            
+            <h3>Special Mechanics</h3>
+            <ul>
+                <li><strong>Legendary:</strong> Extremely rare and powerful cards (50% value boost)</li>
+                <li><strong>Ancient Power:</strong> Cards with historical significance (30% value boost)</li>
+                <li><strong>Mythic Evolution:</strong> Cards that can evolve into more powerful forms (40% value boost)</li>
+            </ul>
+            
+            <h3>Featured Cards</h3>
+            <div class="card-display">
+                <div class="card">
+                    <div class="card-art">Gaiarus</div>
+                    <div class="card-info">
+                        <div class="card-name">Gaiarus</div>
+                        <div class="card-type">Earth / Mythical</div>
+                        <div class="card-rarity mythic-rare">Mythic Rare</div>
+                        <div class="card-description">The embodiment of the planet itself, capable of causing earthquakes with a single step.</div>
+                    </div>
+                    <div class="card-mechanic">Legendary</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-art">Chronos</div>
+                    <div class="card-info">
+                        <div class="card-name">Chronos</div>
+                        <div class="card-type">Cosmic / Mythical</div>
+                        <div class="card-rarity mythic-rare">Mythic Rare</div>
+                        <div class="card-description">The keeper of time itself, able to accelerate, slow, or even stop the flow of time.</div>
+                    </div>
+                    <div class="card-mechanic">Legendary</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-art">Draconis</div>
+                    <div class="card-info">
+                        <div class="card-name">Draconis</div>
+                        <div class="card-type">Dragon / Cosmic / Mythical</div>
+                        <div class="card-rarity mythic-rare">Mythic Rare</div>
+                        <div class="card-description">The first dragon ever to exist, from which all other dragons descended.</div>
+                    </div>
+                    <div class="card-mechanic">Legendary</div>
+                </div>
+            </div>
+            
+            <h3>Set Rotation</h3>
+            <p>The Mythic Legends set is introduced in Year 2 and rotates out after Year 5. Card values increase before rotation, drop immediately after rotation, and then gradually increase again as they become collectibles.</p>
+        </div>
+        
+        <div class="feature-section">
+            <h2>New Achievements</h2>
+            <p>Track your progress with new achievements related to trading, grading, and the Mythic Legends set.</p>
+            
+            <div class="achievement">
+                <div class="achievement-icon">🤝</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">First Deal</div>
+                    <div class="achievement-description">Complete your first trade with another collector</div>
+                </div>
+            </div>
+            
+            <div class="achievement">
+                <div class="achievement-icon">🏅</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Professional Grade</div>
+                    <div class="achievement-description">Get your first card professionally graded</div>
+                </div>
+            </div>
+            
+            <div class="achievement">
+                <div class="achievement-icon">💯</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Perfect Ten</div>
+                    <div class="achievement-description">Obtain a card with a perfect grade 10 rating</div>
+                </div>
+            </div>
+            
+            <div class="achievement">
+                <div class="achievement-icon">✨</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Mythic Collector</div>
+                    <div class="achievement-description">Collect your first Mythic Rare card</div>
+                </div>
+            </div>
+            
+            <div class="achievement">
+                <div class="achievement-icon">👑</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Legendary Collector</div>
+                    <div class="achievement-description">Collect all cards with the Legendary mechanic</div>
+                </div>
+            </div>
+            
+            <div class="achievement">
+                <div class="achievement-icon">🏰</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Mythic Mastery</div>
+                    <div class="achievement-description">Complete the entire Mythic Legends set</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Get Started</h2>
+            <p>Ready to experience the enhanced Cardboard Capitalist game? Download the full version and start your collection today!</p>
+            
+            <a href="enhanced_cardboard_capitalist_v2.zip" class="cta-button">Download Enhanced Edition V2</a>
+            
+            <h3>Installation</h3>
+            <p>Extract the ZIP file and run a local web server to play the game. See the INSTALL_V2.md file for detailed instructions.</p>
+        </div>
+        
+        <footer>
+            <p>Cardboard Capitalist Enhanced Edition V2 - Created by NinjaTech AI</p>
+        </footer>
+    </div>
+</body>
+</html>

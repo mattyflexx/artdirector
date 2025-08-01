@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardboard Capitalist - Enhanced Edition V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Base styles -->
+    <link rel="stylesheet" href="improved_styles.css">
+    
+    <!-- Enhanced feature styles -->
+    <link rel="stylesheet" href="trading_styles.css">
+    <link rel="stylesheet" href="grading_styles.css">
+    <link rel="stylesheet" href="enhanced_ui.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="bg-gray-800 text-gray-200">
+
+    <div id="app" class="app-container">
+        <aside class="sidebar">
+            <h1 class="game-title mb-4">Cardboard Capitalist</h1>
+            
+            <div id="player-stats" class="player-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Cash:</span>
+                    <span id="player-cash" class="stat-value cash">$50.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Net Worth:</span>
+                    <span id="player-net-worth" class="stat-value net-worth">$50.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Sleeves:</span>
+                    <span id="player-sleeves" class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Toploaders:</span>
+                    <span id="player-toploaders" class="stat-value">50</span>
+                </div>
+            </div>
+            
+            <div id="time-controls" class="mb-4">
+                <div class="mb-2">Date: <span id="game-date" class="font-semibold">Year 1, Day 1</span></div>
+                <button id="next-day-btn" class="btn btn-primary btn-block">Next Day</button>
+            </div>
+            
+            <nav id="main-nav" class="nav-container"></nav>
+            
+            <div id="log-feed" class="log-feed"></div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="game-header">
+                <h2 id="view-title" class="view-title">Collection</h2>
+            </div>
+            
+            <div id="main-view" class="main-view">
+                <!-- Content will be loaded here -->
+                <div class="loading-indicator">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Base scripts -->
+    <script src="config.js"></script>
+    <script src="improved_card_rendering.js"></script>
+    <script src="improved_pack_opening.js"></script>
+    <script src="main_enhanced.js"></script>
+    
+    <!-- Enhanced feature scripts -->
+    <script src="trading_system.js"></script>
+    <script src="card_grading.js"></script>
+    <script src="mythic_legends_set.js"></script>
+    <script src="enhanced_features_integration.js"></script>
+    
+    <script>
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize base game
+            initializeGame();
+            
+            // Initialize enhanced features
+            if (window.enhancedFeatures && window.enhancedFeatures.initializeEnhancedFeatures) {
+                window.enhancedFeatures.initializeEnhancedFeatures();
+            }
+            
+            // Set up navigation
+            setupNavigation();
+            
+            // Render initial view
+            renderMainView('collection');
+            
+            // Add event listener for next day button
+            document.getElementById('next-day-btn').addEventListener('click', function() {
+                advanceDay();
+            });
+            
+            // Log welcome message
+            logMessage("Welcome to Cardboard Capitalist - Enhanced Edition V2!", "system");
+            logMessage("This version includes Trading, Card Grading, and the new Mythic Legends set!", "system");
+        });
+        
+        /**
+         * Set up navigation
+         */
+        function setupNavigation() {
+            const navContainer = document.getElementById('main-nav');
+            if (!navContainer) return;
+            
+            navContainer.innerHTML = '';
+            
+            // Default navigation items if not defined
+            if (!gameState.ui.navItems) {
+                gameState.ui.navItems = [
+                    {
+                        id: 'collection',
+                        label: 'Collection',
+                        icon: '📚',
+                        view: 'collection',
+                        order: 1
+                    },
+                    {
+                        id: 'store',
+                        label: 'Store',
+                        icon: '🛒',
+                        view: 'store',
+                        order: 2
+                    },
+                    {
+                        id: 'market',
+                        label: 'Market',
+                        icon: '📈',
+                        view: 'market',
+                        order: 3
+                    },
+                    {
+                        id: 'trading',
+                        label: 'Trading',
+                        icon: '🔄',
+                        view: 'trading',
+                        order: 4
+                    },
+                    {
+                        id: 'grading',
+                        label: 'Grading',
+                        icon: '🏅',
+                        view: 'grading',
+                        order: 5
+                    },
+                    {
+                        id: 'stats',
+                        label: 'Stats',
+                        icon: '📊',
+                        view: 'stats',
+                        order: 6
+                    }
+                ];
+            }
+            
+            // Sort by order
+            gameState.ui.navItems.sort((a, b) => a.order - b.order);
+            
+            // Create navigation items
+            gameState.ui.navItems.forEach(item => {
+                const navItem = document.createElement('div');
+                navItem.className = `nav-item ${gameState.ui.currentView === item.view ? 'active' : ''}`;
+                navItem.dataset.view = item.view;
+                
+                navItem.innerHTML = `
+                    <span class="nav-icon">${item.icon}</span>
+                    <span class="nav-label">${item.label}</span>
+                `;
+                
+                navItem.addEventListener('click', () => {
+                    // Update active class
+                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                    navItem.classList.add('active');
+                    
+                    // Render view
+                    renderMainView(item.view);
+                });
+                
+                navContainer.appendChild(navItem);
+            });
+        }
+        
+        /**
+         * Log a message to the feed
+         * @param {string} message - The message to log
+         * @param {string} type - The message type (system, error, success, market, achievement)
+         */
+        function logMessage(message, type = 'system') {
+            const logFeed = document.getElementById('log-feed');
+            if (!logFeed) return;
+            
+            const logItem = document.createElement('div');
+            logItem.className = `log-item ${type}`;
+            
+            // Get icon based on type
+            let icon = '💬';
+            switch (type) {
+                case 'error':
+                    icon = '❌';
+                    break;
+                case 'success':
+                    icon = '✅';
+                    break;
+                case 'market':
+                    icon = '📈';
+                    break;
+                case 'achievement':
+                    icon = '🏆';
+                    break;
+                case 'system':
+                    icon = '🔔';
+                    break;
+            }
+            
+            logItem.innerHTML = `
+                <span class="log-icon">${icon}</span>
+                <span class="log-message">${message}</span>
+            `;
+            
+            // Add to log feed
+            logFeed.prepend(logItem);
+            
+            // Limit log items
+            const maxLogItems = 50;
+            const logItems = logFeed.querySelectorAll('.log-item');
+            if (logItems.length > maxLogItems) {
+                for (let i = maxLogItems; i < logItems.length; i++) {
+                    logItems[i].remove();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
