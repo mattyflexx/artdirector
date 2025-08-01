@@ -11,7 +11,7 @@ This guide will help you set up and run the enhanced version 2 of Cardboard Capi
    Make sure the file structure looks like this:
    ```
    /your-folder/
-   ├── enhanced_index_v2.html        # Main HTML file for V2
+   ├── index.html                    # Main HTML file for V2 (GitHub Pages entry point)
    ├── improved_styles.css           # Base CSS styles
    ├── improved_card_rendering.js    # Card rendering functionality
    ├── improved_pack_opening.js      # Pack opening functionality
@@ -59,12 +59,16 @@ This guide will help you set up and run the enhanced version 2 of Cardboard Capi
    ```
 
    **Option 3: Using Visual Studio Code**
-   If you use VS Code, you can install the "Live Server" extension and right-click on `enhanced_index_v2.html` to select "Open with Live Server".
+   If you use VS Code, you can install the "Live Server" extension and right-click on `index.html` to select "Open with Live Server".
 
 4. **Access the Game**
    Open your web browser and navigate to:
    ```
-   http://localhost:8000/enhanced_index_v2.html
+   http://localhost:8000
+   ```
+   or
+   ```
+   http://localhost:8000/index.html
    ```
 
 ## New Features Setup

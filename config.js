@@ -1,8 +1,8 @@
 // config.js
 
-export const ASSET_PATH = 'assets/';
+const ASSET_PATH = 'assets/';
 
-export const ASSETS = {
+const ASSETS = {
     frames: {
         standard: `${ASSET_PATH}frame_standard.png`,
         fullArt: `${ASSET_PATH}frame_fullart.png`
@@ -11,7 +11,7 @@ export const ASSETS = {
     evolutionChainBg: `${ASSET_PATH}evolution_chain_bg.png` // Optional background for evolution chain
 };
 
-export const LAYOUT_BLUEPRINTS = {
+const LAYOUT_BLUEPRINTS = {
     standard: {
         // For the 16:9 artwork window at the top
         artWindow: { 
@@ -52,7 +52,7 @@ export const LAYOUT_BLUEPRINTS = {
     }
 };
 
-export const TCG_SETS = {
+const TCG_SETS = {
     genesis: {
         name: "Genesis",
         code: "GS",
@@ -92,7 +92,7 @@ export const TCG_SETS = {
 };
 
 // Custom Doodlemon management
-export function loadCustomDoodlemon() {
+function loadCustomDoodlemon() {
     try {
         const customData = localStorage.getItem('customDoodlemon');
         return customData ? JSON.parse(customData) : {};
@@ -103,9 +103,9 @@ export function loadCustomDoodlemon() {
 }
 
 // This map is no longer needed because paths are generated automatically.
-export const DOODLEMON_ART = {};
+const DOODLEMON_ART = {};
 
-export function getAllDoodlemonForGame() {
+function getAllDoodlemonForGame() {
     const customDoodlemon = loadCustomDoodlemon();
     const result = {};
     
@@ -132,7 +132,7 @@ export function getAllDoodlemonForGame() {
 }
 
 // New function to build evolution chains
-export function buildEvolutionChain(cardId) {
+function buildEvolutionChain(cardId) {
     const chain = [];
     let currentCard = TCG_SETS.genesis.cards.find(card => card.id === cardId);
     
