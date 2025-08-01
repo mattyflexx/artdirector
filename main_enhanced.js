@@ -58,16 +58,7 @@ const DOM = {
     sortBtn: document.getElementById('sort-btn')
 };
 
-// Asset paths
-const ASSET_PATH = 'assets/';
-const ASSETS = {
-    frames: {
-        standard: `${ASSET_PATH}frame_standard.png`,
-        fullArt: `${ASSET_PATH}frame_fullart.png`
-    },
-    cardBack: `${ASSET_PATH}card_back.png`,
-    evolutionChainBg: `${ASSET_PATH}evolution_chain_bg.png`
-};
+// Asset paths are defined in config.js
 
 // Card conditions
 const CARD_CONDITIONS = {

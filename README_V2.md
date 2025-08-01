@@ -34,7 +34,7 @@ Welcome to the Enhanced Edition V2 of Cardboard Capitalist, a trading card game 
 
 ## How to Play
 
-1. Start the game by opening `enhanced_index_v2.html` in your web browser
+1. Start the game by opening `index.html` in your web browser
 2. Use the navigation menu to switch between different sections:
    - **Collection**: View and manage your card collection
    - **Store**: Buy card packs and supplies
