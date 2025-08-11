@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official TCG Variant Showcase - Final</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron&family=Cutive+Mono&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #1a202c; font-family: sans-serif; padding: 2rem; }
+        h1, h2 { color: #e2e8f0; width: 100%; text-align: center; margin-bottom: 1rem; }
+        h1 { font-size: 3rem; margin-bottom: 2rem; letter-spacing: 2px; }
+        #card-display-area { display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
+        .card-wrapper { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; perspective: 1000px; }
+        .card-container { position: relative; width: 250px; height: 350px; cursor: pointer; border-radius: 12.5px; background-color: #1a202c; transform-style: preserve-3d; transition: transform 0.3s ease; }
+        .card-container:hover { transform: rotateY(var(--rotateY, 0deg)) rotateX(var(--rotateX, 0deg)); }
+        .card-art { position: absolute; z-index: 1; background-size: 75% 75%; background-position: center; background-repeat: no-repeat; background-color: #111; overflow: hidden; }
+        .card-art::before, .card-art::after { content:''; position: absolute; left:0; top:0; width:100%; height:100%; z-index: 1; pointer-events: none; }
+        .card-frame { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 4; pointer-events: none; }
+        .card-text-overlay { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 5; }
+        .card-name-box, .card-lore-box, .card-number-box { position: absolute; display: flex; align-items: center; justify-content: center; text-align: center; color: white; padding: 0 10px; box-sizing: border-box; }
+        .card-name-box { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); }
+        .card-lore-box { font-size: 0.85rem; padding: 10px 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .card-number-box { font-size: 0.7rem; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.8); }
+        .rarity-stars-container { position: absolute; display: flex; align-items: center; justify-content: flex-start; }
+        .star-wrapper:not(:first-child) { margin-left: -8px; }
+        .star { width: 14px; height: 14px; stroke: #1a202c; stroke-width: 1.5px; }
+        .star.white { fill: #f0f0f0; } .star.gold { fill: #FFD700; }
+        .star.rainbow { fill: #FFD700; animation: rainbowStar 3s linear infinite; }
+        .star.rainbow:nth-child(2){animation-delay:-0.6s} .star.rainbow:nth-child(3){animation-delay:-1.2s}
+        .star.rainbow:nth-child(4){animation-delay:-1.8s} .star.rainbow:nth-child(5){animation-delay:-2.4s}
+        @keyframes rainbowStar { 0%,100%{filter:hue-rotate(0deg)} 50%{filter:hue-rotate(360deg)} }
+
+        .texture-overlay { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; border-radius: inherit; overflow:hidden; }
+        .texture-overlay::before, .texture-overlay::after { content: ''; position: absolute; left:0; top:0; width:100%; height:100%; }
+
+        .holo-embers.texture-overlay::before { background: linear-gradient(to top, rgba(255,100,0,0.4), transparent); height: 40%; top: 60%; animation: flicker 4s ease-in-out infinite; }
+        .ember { position: absolute; background-color: rgba(255,180,50,0.7); border-radius: 50%; animation: rise-and-fade 8s linear infinite; box-shadow: 0 0 5px rgba(255,165,0,0.8); }
+        .star-particle { position: absolute; border-radius: 50%; animation: twinkle 4s ease-in-out infinite; z-index: 3; }
+        .texture-runic.texture-overlay::after { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' stroke-width='3' stroke='white' fill='none' stroke-linecap='square'%3e%3cpath d='M10 10 L 10 90 M10 50 L 30 10 M10 50 L 30 90 M50 10 L70 50 L50 90 L50 10' /%3e%... "); mix-blend-mode: overlay; opacity: 0.5; background-size: 80px; }
+        .anima-canvas { width: 100%; height: 100%; }
+        .datastream-glitch.glitching { animation: glitch-fx 0.5s steps(8, end) both; }
+        .digital-rain-container { z-index: 3; }
+        .digital-rain-drop { position:absolute; font-family:'Cutive Mono',monospace; font-size:10px; color:hsl(140, 80%, 70%); text-shadow:0 0 5px hsl(140,80%,50%); animation-name: rain-fall; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: forwards; }
+        .shatterfractor.card-art::before { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cpath fill='none' stroke='hsla(0,0%25,100%25,.3)' stroke-width='1.5' d='M9.8 ... z'/%3e%3c/svg%3e"); background-size: 100px; }
+        .shatterfractor.card-art::after { background: linear-gradient(110deg, transparent 40%, white 50%, transparent 60%); background-size: 300% 100%; mix-blend-mode: screen; animation: shine-pass 6s ease-in-out infinite; }
+        .superfractor.card-art::before { background: linear-gradient(110deg, transparent 35%, white 50%, transparent 65%); background-size: 300% 100%; animation: super-shine 4s ease-in-out infinite; z-index: 3; mix-blend-mode: screen; }
+        .superfractor.card-art::after { mask-image: repeating-radial-gradient(circle,black 0 2px,transparent 2.5px,black 2.5px 6.5px,transparent 7px),repeating-radial-gradient(circle,black 0 2px,transparent 2.5px,black 2.5px 6.5px,transparent 7px); mask-size: 20px 20px; mask-position: 0 0, 10px 10px; mask-composite: intersect; z-index: 2; opacity: 0.35; }
+        .super-classic.card-art::after { background: linear-gradient(135deg, #AE8625, #F7EF8A, #D2AC47, #EDC967); }
+        .super-cosmic.card-art::after { background: linear-gradient(135deg, #2c1a4d, #7c52ff, #29abe2, #a6ffcb); }
+
+        /* Keyframe Animations */
+        @keyframes flicker{0%,100%{opacity:.8}50%{opacity:.5}} @keyframes rise-and-fade{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-350px);opacity:0}}
+        @keyframes twinkle{0%,100%{opacity:0}50%{opacity:.9}} @keyframes glitch-fx{0%{transform:translate(0)}10%{transform:translate(-5px,2px)}20%{transform:translate(5px,-2px)}30%{transform:translate(-3px,3px)}40%{transform:translate(3px,-3px)}50%{clip-path:inset(40% 0)}80%{clip-path:inset(0)}100%{transform:translate(0)}}
+        @keyframes rain-fall{from{transform:translateY(-10%)}to{transform:translateY(110%)}} @keyframes shine-pass{0%{background-position:150% center}100%{background-position:-50% center}}
+        @keyframes super-shine{0%{background-position:150% 0}100%{background-position:-50% 0}}
+    </style>
+</head>
+<body>
+    <h1>Official TCG Variant Showcase</h1>
+    <div id="card-display-area"></div>
+    <script>
+        const LAYOUT_BLUEPRINTS = { standard: { artWindow:{x:30,y:65,width:690,height:388}, name:{x:80,y:530,width:590,height:70}, lore:{x:80,y:680,width:590,height:280}, cardNumber:{x:530,y:920,width:100,height:30}, rarityStars:{x:105,y:920,width:105,height:40} } };
+        
+        // --- DATA OBJECTS (DEFINED FIRST) ---
+        const MASTER_CARD_DATA = { id: "GS009", name: "Volcantoise", rarity: "Holo Rare", lore: "A rare hybrid species that combines volcanic heat with aquatic defense mechanisms.", img: "https://i.imgur.com/4aIKU6s.png" };
+        const SHOWCASE_DESIGNS = [
+             { ...MASTER_CARD_DATA, title:'Superfractor: Gold', id: '1/1', class:'super-classic superfractor', scope:'window' },
+             { ...MASTER_CARD_DATA, name: 'Cosmic Volcantoise', title:'Superfractor: Cosmic', id: '1/1', class:'super-cosmic superfractor', scope:'window'},
+             { ...MASTER_CARD_DATA, title:'Data Stream Collapse', class:'datastream-glitch', scope:'hybrid'},
+             { ...MASTER_CARD_DATA, title:'Shatterfractor', class:'shatterfractor', scope:'window'},
+             { ...MASTER_CARD_DATA, title:'Refined Embers', class:'holo-embers', scope:'full'},
+             { ...MASTER_CARD_DATA, title:'Cosmic Dust', class:'holo-cosmic', scope:'full'},
+             { ...MASTER_CARD_DATA, title:'Unstable Anima', class:'texture-anima', scope:'full'},
+             { ...MASTER_CARD_DATA, title:'Runic Etching', class:'texture-runic', scope:'full'}
+        ];
+        const STAR_SVG = `<svg class="star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.445l-7.416 4.968 1.48-8.279L0 9.306l8.332-1.151z"/></svg>`;
+        const RARITY_MAP = {'Common':{count:1,color:'white'},'Uncommon':{count:2,color:'white'},'Holo Rare':{count:3,color:'white'},'Alternate Art':{count:4,color:'gold'},'Chase':{count:5,color:'rainbow'}, 'Superfractor':{count:5,color:'rainbow'}};
+
+        // --- CORE FUNCTIONS ---
+        function createCardElement(cardData) {
+            const layout=LAYOUT_BLUEPRINTS.standard; const baseW=750,baseH=1050; const scale=(v,b)=>(v/b)*100+'%';
+            const artX=scale(layout.artWindow.x,baseW),artY=scale(layout.artWindow.y,baseH),artW=scale(layout.artWindow.width,baseW),artH=scale(layout.artWindow.height,baseH);
+            const cardEl=document.createElement('div'); cardEl.className='card-container';
+            cardEl.innerHTML = `
+                <div class="card-art" style="left:${artX};top:${artY};width:${artW};height:${artH};background-image:url(${cardData.img});"></div>
+                <div class="card-text-overlay">
+                    <div class="card-name-box" style="left:${scale(layout.name.x,baseW)};top:${scale(layout.name.y,baseH)};width:${scale(layout.name.width,baseW)};height:${scale(layout.name.height,baseH)};">${cardData.name}</div>
+                    <div class="card-lore-box" style="left:${scale(layout.lore.x,baseW)};top:${scale(layout.lore.y,baseH)};width:${scale(layout.lore.width,baseW)};height:${scale(layout.lore.height,baseH)};">${cardData.lore}</div>
+                    <div class="card-number-box" style="left:${scale(layout.cardNumber.x,baseW)};top:${scale(layout.cardNumber.y,baseH)};width:${scale(layout.cardNumber.width,baseW)};height:${scale(layout.cardNumber.height,baseH)};">${cardData.id}</div>
+                </div>
+                <img class="card-frame" src="https://github.com/mattyflexx/cardboard-capitalist/blob/main/assets/frame_standard.png?raw=true" alt="Card Frame">`;
+            
+            // For showcase consistency, we use the "Holo Rare" star count, but could use cardData.rarity for dynamic stars
+            const rarityInfo=RARITY_MAP['Holo Rare']; 
+            if(rarityInfo){
+                const starsContainer=document.createElement('div');starsContainer.className='rarity-stars-container';
+                starsContainer.style.cssText=`left:${scale(layout.rarityStars.x,baseW)};top:${scale(layout.rarityStars.y,baseH)};width:${scale(layout.rarityStars.width,baseW)};height:${scale(layout.rarityStars.height,baseH)};`;
+                for(let i=0;i<rarityInfo.count;i++){
+                    const sWrap=document.createElement('div');sWrap.className='star-wrapper';sWrap.innerHTML=STAR_SVG;
+                    const sEl=sWrap.querySelector('.star');sEl.classList.add(rarityInfo.color);
+                    starsContainer.appendChild(sWrap);
+                }
+                cardEl.querySelector('.card-text-overlay').appendChild(starsContainer);
+            }
+            return cardEl;
+        }
+
+        // --- INITIALIZATION ---
+        function initializeTestBench() {
+            const displayArea = document.getElementById('card-display-area');
+            SHOWCASE_DESIGNS.forEach(design => {
+                const wrapper=document.createElement('div'); wrapper.className='card-wrapper';
+                const titleEl=document.createElement('h2'); titleEl.textContent=design.title;
+                wrapper.appendChild(titleEl);
+                const card=createCardElement(design);
+                const artEl=card.querySelector('.card-art');
+                
+                if (design.scope === 'window') { design.class.split(' ').forEach(cls => artEl.classList.add(cls)); }
+                else {
+                    const overlay=document.createElement('div'); overlay.className='texture-overlay';
+                    if (design.scope === 'hybrid') {
+                        artEl.classList.add(design.class);
+                        overlay.classList.add('digital-rain-container');
+                        setInterval(() => { artEl.classList.add('glitching'); setTimeout(() => artEl.classList.remove('glitching'), 500); }, 3500+Math.random()*4000);
+                        const chars='█▓▒░'; setInterval(() => { const d=document.createElement('div');d.className='digital-rain-drop';d.textContent=chars[Math.floor(Math.random()*chars.length)];d.style.left=`${Math.random()*100}%`;const dur=4+Math.random()*4;d.style.animation=`rain-fall ${dur}s linear forwards`;overlay.appendChild(d);setTimeout(()=>d.remove(),dur*1000);}, 80);
+                    } else { design.class.split(' ').forEach(cls => overlay.classList.add(cls)); }
+                    card.insertBefore(overlay, artEl.nextSibling);
+
+                    if (design.class === 'holo-embers') { for(let i=0;i<20;i++){const e=document.createElement('div');e.className='ember';e.style.cssText=`left:${Math.random()*100}%;bottom:${-10+Math.random()*20}%;animation-duration:${2+Math.random()*8}s;animation-delay:${Math.random()*8}s;width:${2+Math.random()*3}px;height:${2+Math.random()*3}px`;overlay.appendChild(e);}}
+                    else if (design.class === 'holo-cosmic') { for(let i=0;i<70;i++){const s=document.createElement('div');s.className='star-particle';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*4}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background-color:${['#FFF','#E0FFFF','#FFD700'][Math.floor(Math.random()*3)]}`;overlay.appendChild(s);}}
+                    else if (design.class === 'texture-anima') { const c=document.createElement('canvas');c.className='anima-canvas';overlay.appendChild(c);const ctx=c.getContext('2d');let p=[];const r=()=>{c.width=overlay.clientWidth;c.height=overlay.clientHeight;p=[];for(let i=0;i<30;i++){p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2});}};setTimeout(()=>{r();window.addEventListener('resize',r);const a=()=>{ctx.clearRect(0,0,c.width,c.height);ctx.strokeStyle='hsla(55,100%,80%,0.8)';ctx.lineWidth=.5;p.forEach(p1=>{p1.x+=p1.vx;p1.y+=p1.vy;if(p1.x<0||p1.x>c.width)p1.vx*=-1;if(p1.y<0||p1.y>c.height)p1.vy*=-1;p.forEach(p2=>{const dist=Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y)**2);if(dist<50){ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();}});});requestAnimationFrame(a);};a();},50);}
+                }
+                card.addEventListener('mousemove',(e)=>{const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;card.style.setProperty('--rotateY',`${((x/r.width)-.5)*20}deg`);card.style.setProperty('--rotateX',`${((y/r.height)-.5)*-20}deg`);});
+                card.addEventListener('mouseleave',()=>{card.style.setProperty('--rotateY','0deg');card.style.setProperty('--rotateX','0deg')});
+                
+                wrapper.appendChild(card);
+                displayArea.appendChild(wrapper);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initializeTestBench);
+    </script>
+</body>
+</html>

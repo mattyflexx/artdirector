@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Stream Collapse - Manual Rain Config</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cutive+Mono&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #1a202c; font-family: sans-serif; padding: 2rem; }
+        h1 { color: #e2e8f0; width: 100%; text-align: center; margin-bottom: 1rem; }
+        #card-display-area { display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
+        .card-container { position: relative; width: 250px; height: 350px; cursor: pointer; border-radius: 12.5px; overflow: hidden; }
+       
+        .card-layer {
+            position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .art-layer { z-index: 1; background-color: #111; background-size: 75% 75%; background-position: center; background-repeat: no-repeat; }
+        .holo-layer { z-index: 2; border-radius: inherit; overflow: hidden; }
+        .text-layer { z-index: 3; }
+        .frame-layer { z-index: 4; }
+
+        .card-name-box, .card-lore-box, .card-number-box {
+            position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
+            color: white; padding: 0 10px; box-sizing: border-box; text-shadow: 1px 1px 2px #000;
+        }
+        .card-name-box { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; }
+        .card-lore-box { font-size: 0.85rem; padding: 10px 15px; }
+        .card-number-box { font-size: 0.7rem; font-weight: bold; }
+       
+        .datastream-glitch.art-layer.glitching {
+            animation: glitch-fx 0.5s steps(8, end) both;
+        }
+        .digital-rain-container {
+            /* This container will be sized and positioned by JS now */
+        }
+        .digital-rain-drop {
+            position:absolute;
+            font-family:'Cutive Mono',monospace;
+            font-size:10px;
+            color:hsl(140, 80%, 70%);
+            text-shadow:0 0 5px hsl(140,80%,50%);
+            animation-name: rain-fall;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+        }
+       
+        @keyframes glitch-fx { 0%{transform:translate(0)} 10%{transform:translate(-5px,2px)} 20%{transform:translate(5px,-2px)} 30%{transform:translate(-3px,3px)} 40%{transform:translate(3px,-3px)} 50%{clip-path:inset(40% 0)} 80%{clip-path:inset(0)} 100%{transform:translate(0)} }
+        @keyframes rain-fall { from { transform: translateY(-10%); } to { transform: translateY(110%); } }
+    </style>
+</head>
+<body>
+    <h1>Data Stream Collapse</h1>
+    <div id="card-display-area"></div>
+    <script>
+        const LAYOUT_BLUEPRINTS = {
+            standard: {
+                artWindow: { x: 30, y: 65, width: 690, height: 388 },
+                name: { x: 80, y: 530, width: 590, height: 70 },
+                lore: { x: 80, y: 680, width: 590, height: 280 },
+                cardNumber: { x: 530, y: 920, width: 100, height: 30 }
+            }
+        };
+        const CARD_DATA = {
+            id: "GS009",
+            name: "Volcantoise",
+            lore: "DATA CORRUPTED. UNABLE TO RENDER LORE.",
+            img: "https://i.imgur.com/4aIKU6s.png"
+        };
+       
+        // --- YOUR NEW CONTROL PANEL ---
+        const RAIN_EFFECT_CONFIG = {
+            // All coordinates are based on the 750x1050 grid
+            x: 100,          // The starting left position
+            y: 105,          // The starting top position
+            width: 600,     // The width of the rain area
+            height: 100     // The height of the rain area
+        };
+
+        function createCardElement(cardData) {
+            const layout = LAYOUT_BLUEPRINTS.standard;
+            const baseW=750, baseH=1050;
+            const scale = (v, b) => (v / b) * 100 + '%';
+            const artX=scale(layout.artWindow.x,baseW), artY=scale(layout.artWindow.y,baseH), artW=scale(layout.artWindow.width,baseW), artH=scale(layout.artWindow.height,baseH);
+           
+            const cardEl = document.createElement('div'); cardEl.className='card-container';
+            cardEl.innerHTML = `
+                <div class="card-layer art-layer" style="left:${artX}; top:${artY}; width:${artW}; height:${artH}; background-image:url(${cardData.img});"></div>
+                <div class="card-layer holo-layer digital-rain-container"></div>
+                <div class="card-layer text-layer">
+                    <div class="card-name-box" style="left:${scale(layout.name.x,baseW)};top:${scale(layout.name.y,baseH)};width:${scale(layout.name.width,baseW)};height:${scale(layout.name.height,baseH)};">${cardData.name}</div>
+                    <div class="card-lore-box" style="left:${scale(layout.lore.x,baseW)};top:${scale(layout.lore.y,baseH)};width:${scale(layout.lore.width,baseW)};height:${scale(layout.lore.height,baseH)};">${cardData.lore}</div>
+                    <div class="card-number-box" style="left:${scale(layout.cardNumber.x,baseW)};top:${scale(layout.cardNumber.y,baseH)};width:${scale(layout.cardNumber.width,baseW)};height:${scale(layout.cardNumber.height,baseH)};">${cardData.id}</div>
+                </div>
+                <img class="card-layer frame-layer" src="https://github.com/mattyflexx/cardboard-capitalist/blob/main/assets/frame_standard.png?raw=true" alt="Card Frame">`;
+           
+            // --- Logic now uses the RAIN_EFFECT_CONFIG ---
+            const rainContainer = cardEl.querySelector('.digital-rain-container');
+            rainContainer.style.left = scale(RAIN_EFFECT_CONFIG.x, baseW);
+            rainContainer.style.top = scale(RAIN_EFFECT_CONFIG.y, baseH);
+            rainContainer.style.width = scale(RAIN_EFFECT_CONFIG.width, baseW);
+            rainContainer.style.height = scale(RAIN_EFFECT_CONFIG.height, baseH);
+
+            return cardEl;
+        }
+
+        function initializeTestBench() {
+            const displayArea = document.getElementById('card-display-area');
+            const card = createCardElement(CARD_DATA);
+            displayArea.appendChild(card);
+
+            const artLayer = card.querySelector('.art-layer');
+            const holoLayer = card.querySelector('.holo-layer');
+
+            artLayer.classList.add('datastream-glitch');
+            setInterval(() => { artLayer.classList.add('glitching'); setTimeout(() => artLayer.classList.remove('glitching'), 500); }, 3500 + Math.random() * 4000);
+           
+            const rainChars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂﾁﾀﾅｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789!?#$&*@()[]{}<>абвгдеёжзийклмнопрстуфхцчшщъыьэюя¦';
+            setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'digital-rain-drop';
+                drop.textContent = rainChars[Math.floor(Math.random() * rainChars.length)];
+                drop.style.left = `${Math.random() * 100}%`;
+                const duration = 2 + Math.random() * 2; // Make rain a bit faster
+                drop.style.animationDuration = `${duration}s`;
+                holoLayer.appendChild(drop);
+                setTimeout(() => { drop.remove(); }, duration * 1000);
+            }, 50); // More frequent rain
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeTestBench);
+    </script>
+</body>
+</html>
